@@ -17,10 +17,13 @@ export class UsersService {
       throw new CustomErrorException(ERRORS.EmailExisted);
     }
 
-    this.userRepo.createUser({ email: body.email, password: body.password });
-
     const token = crypto.randomBytes(32).toString('hex');
-    this.userRepo.saveToken(body.email, token);
+    this.userRepo.createUser({
+      email: body.email,
+      password: body.password,
+      verify_token: token,
+    });
+
     this.mailService.sendUserConfirmation(body.email, token);
 
     return {

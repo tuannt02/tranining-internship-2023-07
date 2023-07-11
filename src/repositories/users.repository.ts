@@ -10,30 +10,20 @@ export class UserRepository {
    *
    * @param user
    */
-  async createUser(user: Pick<User, 'email' | 'password'>): Promise<void> {
+  async createUser(
+    user: Pick<User, 'email' | 'password' | 'verify_token'>,
+  ): Promise<void> {
     const hashedPassword = await this.hashPassword(user.password);
     const timestamp = dateToTimestamp();
 
     return this.model.create({
       email: user.email,
+      verify_token: user.verify_token,
       password: hashedPassword,
       is_mail_active: false,
       created_at: timestamp,
       updated_at: timestamp,
     });
-  }
-
-  async saveToken(email: string, token: string): Promise<void> {
-    const timestamp = dateToTimestamp();
-    const key = {
-      email,
-    };
-    const values: Partial<User> = {
-      verify_token: token,
-      updated_at: timestamp,
-    };
-
-    return this.model.update(key, values);
   }
 
   /**

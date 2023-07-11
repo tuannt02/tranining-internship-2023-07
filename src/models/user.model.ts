@@ -5,7 +5,7 @@ export type User = {
   email: string;
   password: string;
   is_mail_active: boolean;
-  verify_token?: string;
+  verify_token: string;
   created_at: number;
   updated_at: number;
 };
