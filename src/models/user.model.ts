@@ -4,10 +4,10 @@ import { TABLE_NAME } from '../shared/constants';
 export type User = {
   email: string;
   password: string;
-  is_mail_active: boolean;
-  verify_token: string;
-  created_at: number;
-  updated_at: number;
+  isMailActive: boolean;
+  verifyToken: string;
+  createdAt: number;
+  updatedAt: number;
 };
 
 export class UserModel extends AWSDynamo<User> {

@@ -11,19 +11,36 @@ export class UserRepository {
    * @param user
    */
   async createUser(
-    user: Pick<User, 'email' | 'password' | 'verify_token'>,
+    user: Pick<User, 'email' | 'password' | 'verifyToken'>,
   ): Promise<void> {
     const hashedPassword = await this.hashPassword(user.password);
     const timestamp = dateToTimestamp();
 
     return this.model.create({
       email: user.email,
-      verify_token: user.verify_token,
+      verifyToken: user.verifyToken,
       password: hashedPassword,
-      is_mail_active: false,
-      created_at: timestamp,
-      updated_at: timestamp,
+      isMailActive: false,
+      createdAt: timestamp,
+      updatedAt: timestamp,
     });
+  }
+
+  /**
+   * Verify success
+   *
+   * @param password
+   */
+  async verifySuccess(email: string): Promise<void> {
+    const key = {
+      email,
+    };
+
+    const values: Partial<User> = {
+      isMailActive: true,
+    };
+
+    this.model.update(key, values);
   }
 
   /**

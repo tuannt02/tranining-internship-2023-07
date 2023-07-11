@@ -8,7 +8,8 @@ type Code =
   | 'DBDelete'
   | 'InvalidEmail'
   | 'InvalidPassword'
-  | 'EmailExisted';
+  | 'EmailExisted'
+  | 'InvalidLink';
 
 export const ERRORS: Record<Code, CustomError> = {
   InternalServerError: {
@@ -49,6 +50,11 @@ export const ERRORS: Record<Code, CustomError> = {
   EmailExisted: {
     code: 'B00003',
     message: 'Email is already existed',
+    statusCode: 409,
+  },
+  InvalidLink: {
+    code: 'B00004',
+    message: 'Invalid link',
     statusCode: 409,
   },
 };

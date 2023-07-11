@@ -21,13 +21,31 @@ export class UsersService {
     this.userRepo.createUser({
       email: body.email,
       password: body.password,
-      verify_token: token,
+      verifyToken: token,
     });
 
     this.mailService.sendUserConfirmation(body.email, token);
 
     return {
       message: 'An Email sent to your account please verify',
+    };
+  }
+
+  async verifyToken(email: string, token: string) {
+    const user = await this.userRepo.getUserByEmail(email);
+    if (!user) {
+      throw new CustomErrorException(ERRORS.InvalidLink);
+    }
+
+    const { verifyToken } = user;
+    if (verifyToken !== token) {
+      throw new CustomErrorException(ERRORS.InvalidLink);
+    }
+
+    this.userRepo.verifySuccess(email);
+
+    return {
+      message: 'Email verified successfully',
     };
   }
 }
