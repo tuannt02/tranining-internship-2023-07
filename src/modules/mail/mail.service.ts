@@ -1,4 +1,4 @@
-import { MailerService } from '@nestjs-modules/mailer';
+import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -19,5 +19,23 @@ export class MailService {
       subject: 'Welcome to Vitalify Asia! Confirm your Email',
       text: url,
     });
+  }
+
+  async sendEmailForgotPassword(email: string, token: string) {
+    const mailOptions: ISendMailOptions = {
+      from: '"Vitalify Asia" <' + email,
+      to: email,
+      subject: 'Forgotten password',
+      text: 'Forgot password',
+      html:
+        'Hi! <br><br> If you requested to reset your password<br><br>' +
+        '<a href=' +
+        this.configService.get<string>('BASE_URL') +
+        '/users/reset-password/' +
+        token +
+        '>Click here</a>',
+    };
+
+    await this.mailerService.sendMail(mailOptions);
   }
 }

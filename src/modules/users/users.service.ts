@@ -5,6 +5,7 @@ import { CustomErrorException } from 'src/shared/exceptions/custom-error.excepti
 import { ERRORS } from 'src/shared/constants';
 import { MailService } from '../mail/mail.service';
 import * as crypto from 'crypto';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 
 @Injectable()
 export class UsersService {
@@ -46,6 +47,20 @@ export class UsersService {
 
     return {
       message: 'Email verified successfully',
+    };
+  }
+
+  async forgotPassword(params: ForgotPasswordDto) {
+    const user = await this.userRepo.getUserByEmail(params.email);
+    if (!user) {
+      throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    this.mailService.sendEmailForgotPassword(params.email, token);
+
+    return {
+      messsage: 'An Email reset password sent to your account please confirm',
     };
   }
 }
