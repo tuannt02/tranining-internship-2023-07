@@ -27,6 +27,25 @@ export class UserRepository {
   }
 
   /**
+   * Save token
+   *
+   * @param password
+   * @param token
+   */
+  async saveToken(email: string, token: string): Promise<void> {
+    const timestamp = dateToTimestamp();
+    const key = {
+      email,
+    };
+    const values: Partial<User> = {
+      verifyToken: token,
+      updatedAt: timestamp,
+    };
+
+    return this.model.update(key, values);
+  }
+
+  /**
    * Verify success
    *
    * @param password
@@ -37,6 +56,7 @@ export class UserRepository {
     };
 
     const values: Partial<User> = {
+      verifyToken: '',
       isMailActive: true,
     };
 

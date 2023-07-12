@@ -9,7 +9,10 @@ type Code =
   | 'InvalidEmail'
   | 'InvalidPassword'
   | 'EmailExisted'
-  | 'InvalidLink';
+  | 'InvalidLink'
+  | 'AccountUnactive'
+  | 'Unauthorized'
+  | 'NotFound';
 
 export const ERRORS: Record<Code, CustomError> = {
   InternalServerError: {
@@ -56,5 +59,20 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'B00004',
     message: 'Invalid link',
     statusCode: 409,
+  },
+  AccountUnactive: {
+    code: 'B00005',
+    message: 'An Email sent to your account please verify',
+    statusCode: 400,
+  },
+  Unauthorized: {
+    code: 'C00001',
+    message: 'Unauthorized',
+    statusCode: 401,
+  },
+  NotFound: {
+    code: 'C00002',
+    message: 'NotFound',
+    statusCode: 401,
   },
 };
