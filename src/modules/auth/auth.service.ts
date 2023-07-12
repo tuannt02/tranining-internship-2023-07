@@ -51,6 +51,7 @@ export class AuthService {
       accessToken: await this.jwtService.signAsync(payload),
       refreshToken: await this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
+        expiresIn: '60d', // 2 Month
       }),
     };
   }
