@@ -6,6 +6,7 @@ import { ERRORS } from 'src/shared/constants';
 import { MailService } from '../mail/mail.service';
 import * as crypto from 'crypto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ResetPasswordParamDto } from './dto/resetPassword.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,10 +58,32 @@ export class UsersService {
     }
 
     const token = crypto.randomBytes(32).toString('hex');
+    this.userRepo.saveForgetPasswordToken(params.email, token);
     this.mailService.sendEmailForgotPassword(params.email, token);
 
     return {
       messsage: 'An Email reset password sent to your account please confirm',
+    };
+  }
+
+  async resetPassword(params: ResetPasswordParamDto, newPassword: string) {
+    // Check if email valid
+    const user = await this.userRepo.getUserByEmail(params.email);
+    if (!user) {
+      throw new CustomErrorException(ERRORS.InvalidLink);
+    }
+
+    // Check if token valid
+    if (user?.forgotPwToken !== params.token) {
+      throw new CustomErrorException(ERRORS.InvalidLink);
+    }
+    await this.userRepo.saveForgetPasswordToken(params.email, '');
+
+    // Update password
+    await this.userRepo.updatePassword(params.email, newPassword);
+
+    return {
+      message: 'Password reset successfully',
     };
   }
 }

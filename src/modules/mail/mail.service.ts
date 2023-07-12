@@ -31,7 +31,7 @@ export class MailService {
         'Hi! <br><br> If you requested to reset your password<br><br>' +
         '<a href=' +
         this.configService.get<string>('BASE_URL') +
-        '/users/reset-password/' +
+        `/api/users/${email}/reset-password/` +
         token +
         '>Click here</a>',
     };

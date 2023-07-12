@@ -6,6 +6,7 @@ export type User = {
   password: string;
   isMailActive: boolean;
   verifyToken: string;
+  forgotPwToken?: string;
   createdAt: number;
   updatedAt: number;
 };

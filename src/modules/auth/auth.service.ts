@@ -35,7 +35,7 @@ export class AuthService {
     // Check if account active
     if (!user.isMailActive) {
       const token = crypto.randomBytes(32).toString('hex');
-      this.userRepo.saveToken(user.email, token);
+      this.userRepo.saveVerifyToken(user.email, token);
 
       this.mailService.sendUserConfirmation(user.email, token);
 
