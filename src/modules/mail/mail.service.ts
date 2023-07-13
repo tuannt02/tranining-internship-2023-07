@@ -28,12 +28,8 @@ export class MailService {
       subject: 'Forgotten password',
       text: 'Forgot password',
       html:
-        'Hi! <br><br> If you requested to reset your password<br><br>' +
-        '<a href=' +
-        this.configService.get<string>('BASE_URL') +
-        `/api/users/${email}/reset-password/` +
-        token +
-        '>Click here</a>',
+        `Hi! <br><br> Your password reset code is: ${token}<br><br>` +
+        'This is a security token, please do not share it with anyone',
     };
 
     await this.mailerService.sendMail(mailOptions);

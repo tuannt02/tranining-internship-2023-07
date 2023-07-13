@@ -8,7 +8,17 @@ import {
   NotContains,
 } from 'class-validator';
 
-export class ResetPasswordBodyDto {
+export class ResetPasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  @MaxLength(255)
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  token: string;
+
   @IsNotEmpty()
   @IsString()
   @MinLength(8)
@@ -19,16 +29,4 @@ export class ResetPasswordBodyDto {
       'Password must be between 8 and 80 characters long with 1 special character and capital character each',
   })
   newPassword: string;
-}
-
-export class ResetPasswordParamDto {
-  @IsNotEmpty()
-  @IsString()
-  @IsEmail()
-  @MaxLength(255)
-  email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  token: string;
 }

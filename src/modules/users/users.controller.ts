@@ -10,10 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { SignupDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
-import {
-  ResetPasswordBodyDto,
-  ResetPasswordParamDto,
-} from './dto/resetPassword.dto';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
 
 @Controller()
 export class UsersController {
@@ -37,12 +34,9 @@ export class UsersController {
     return this.usersService.forgotPassword(forgotPwDto);
   }
 
-  @Post('/api/users/:email/reset-password/:token')
+  @Post('/api/users/reset-password')
   @HttpCode(HttpStatus.OK)
-  resetPassword(
-    @Param() params: ResetPasswordParamDto,
-    @Body() resetPwDto: ResetPasswordBodyDto,
-  ) {
-    return this.usersService.resetPassword(params, resetPwDto.newPassword);
+  resetPassword(@Body() resetPwDto: ResetPasswordDto) {
+    return this.usersService.resetPassword(resetPwDto);
   }
 }
