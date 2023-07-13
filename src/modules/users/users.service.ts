@@ -7,6 +7,7 @@ import { MailService } from '../mail/mail.service';
 import * as crypto from 'crypto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 @Injectable()
 export class UsersService {
@@ -87,6 +88,42 @@ export class UsersService {
 
     return {
       message: 'Password reset successfully',
+    };
+  }
+
+  async changePassword(changePwDto: ChangePasswordDto) {
+    const user = await this.userRepo.getUserByEmail(changePwDto.email);
+    if (!user) {
+      throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+    }
+
+    // Check if valid password
+    const isValidPassword = await this.userRepo.isPasswordValid(
+      changePwDto.oldPassword,
+      user.password,
+    );
+    if (!isValidPassword) {
+      throw new CustomErrorException(ERRORS.Unauthorized);
+    }
+
+    // Check if account active
+    if (!user.isMailActive) {
+      const token = crypto.randomBytes(32).toString('hex');
+      this.userRepo.saveVerifyToken(user.email, token);
+
+      this.mailService.sendUserConfirmation(user.email, token);
+
+      throw new CustomErrorException(ERRORS.AccountUnactive);
+    }
+
+    // Update password
+    await this.userRepo.updatePassword(
+      changePwDto.email,
+      changePwDto.newPassword,
+    );
+
+    return {
+      message: 'Password change successfully',
     };
   }
 }

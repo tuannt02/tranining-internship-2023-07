@@ -24,7 +24,7 @@ export class AuthService {
     }
 
     // Check if valid password
-    const isValidPassword = this.userRepo.isPasswordValid(
+    const isValidPassword = await this.userRepo.isPasswordValid(
       signInDto.password,
       user.password,
     );
