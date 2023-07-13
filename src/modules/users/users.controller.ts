@@ -27,9 +27,9 @@ export class UsersController {
     return this.usersService.verifyToken(email, token);
   }
 
-  @Get('/api/users/forgot-password/:email')
+  @Post('/api/users/forgot-password')
   @HttpCode(HttpStatus.OK)
-  forgotPassword(@Param() forgotPwParamDto: ForgotPasswordDto) {
-    return this.usersService.forgotPassword(forgotPwParamDto);
+  forgotPassword(@Body() forgotPwDto: ForgotPasswordDto) {
+    return this.usersService.forgotPassword(forgotPwDto);
   }
 }
