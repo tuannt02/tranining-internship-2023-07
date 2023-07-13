@@ -53,6 +53,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'password': {
         return ERRORS.InvalidPassword;
       }
+      case 'newPassword': {
+        return ERRORS.InvalidNewPassword;
+      }
+      case 'oldPassword': {
+        return ERRORS.InvalidOldPassword;
+      }
       default:
         return ERRORS.InternalServerError;
     }

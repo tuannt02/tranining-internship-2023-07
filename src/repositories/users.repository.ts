@@ -26,19 +26,55 @@ export class UserRepository {
     });
   }
 
+  async updatePassword(email: string, newPassword: string): Promise<void> {
+    const timestamp = dateToTimestamp();
+
+    const key = {
+      email,
+    };
+
+    const values: Partial<User> = {
+      password: await this.hashPassword(newPassword),
+      updatedAt: timestamp,
+    };
+
+    return this.model.update(key, values);
+  }
+
   /**
    * Save token
    *
    * @param password
    * @param token
    */
-  async saveToken(email: string, token: string): Promise<void> {
+  async saveVerifyToken(email: string, token: string): Promise<void> {
     const timestamp = dateToTimestamp();
     const key = {
       email,
     };
     const values: Partial<User> = {
       verifyToken: token,
+      updatedAt: timestamp,
+    };
+
+    return this.model.update(key, values);
+  }
+
+  /**
+   * Save token
+   *
+   * @param password
+   * @param token
+   */
+  async saveForgetPasswordToken(email: string, token: string): Promise<void> {
+    const timestamp = dateToTimestamp();
+
+    const key = {
+      email,
+    };
+
+    const values: Partial<User> = {
+      forgotPwToken: token,
       updatedAt: timestamp,
     };
 

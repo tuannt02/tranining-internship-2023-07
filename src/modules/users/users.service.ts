@@ -5,6 +5,9 @@ import { CustomErrorException } from 'src/shared/exceptions/custom-error.excepti
 import { ERRORS } from 'src/shared/constants';
 import { MailService } from '../mail/mail.service';
 import * as crypto from 'crypto';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 @Injectable()
 export class UsersService {
@@ -46,6 +49,81 @@ export class UsersService {
 
     return {
       message: 'Email verified successfully',
+    };
+  }
+
+  async forgotPassword(params: ForgotPasswordDto) {
+    const user = await this.userRepo.getUserByEmail(params.email);
+    if (!user) {
+      throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    this.userRepo.saveForgetPasswordToken(params.email, token);
+    this.mailService.sendEmailForgotPassword(params.email, token);
+
+    return {
+      messsage: 'An Email reset password sent to your account please confirm',
+    };
+  }
+
+  async resetPassword(resetPwDto: ResetPasswordDto) {
+    // Check if email valid
+    const user = await this.userRepo.getUserByEmail(resetPwDto.email);
+    if (!user) {
+      throw new CustomErrorException(ERRORS.InvalidLink);
+    }
+
+    // Check if token valid
+    if (user?.forgotPwToken !== resetPwDto.token) {
+      throw new CustomErrorException(ERRORS.InvalidLink);
+    }
+    await this.userRepo.saveForgetPasswordToken(resetPwDto.email, '');
+
+    // Update password
+    await this.userRepo.updatePassword(
+      resetPwDto.email,
+      resetPwDto.newPassword,
+    );
+
+    return {
+      message: 'Password reset successfully',
+    };
+  }
+
+  async changePassword(changePwDto: ChangePasswordDto) {
+    const user = await this.userRepo.getUserByEmail(changePwDto.email);
+    if (!user) {
+      throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+    }
+
+    // Check if valid password
+    const isValidPassword = await this.userRepo.isPasswordValid(
+      changePwDto.oldPassword,
+      user.password,
+    );
+    if (!isValidPassword) {
+      throw new CustomErrorException(ERRORS.Unauthorized);
+    }
+
+    // Check if account active
+    if (!user.isMailActive) {
+      const token = crypto.randomBytes(32).toString('hex');
+      this.userRepo.saveVerifyToken(user.email, token);
+
+      this.mailService.sendUserConfirmation(user.email, token);
+
+      throw new CustomErrorException(ERRORS.AccountUnactive);
+    }
+
+    // Update password
+    await this.userRepo.updatePassword(
+      changePwDto.email,
+      changePwDto.newPassword,
+    );
+
+    return {
+      message: 'Password change successfully',
     };
   }
 }

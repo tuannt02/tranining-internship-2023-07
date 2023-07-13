@@ -12,7 +12,10 @@ type Code =
   | 'InvalidLink'
   | 'AccountUnactive'
   | 'Unauthorized'
-  | 'NotFound';
+  | 'NotFound'
+  | 'EmailNotRegisterd'
+  | 'InvalidNewPassword'
+  | 'InvalidOldPassword';
 
 export const ERRORS: Record<Code, CustomError> = {
   InternalServerError: {
@@ -74,5 +77,20 @@ export const ERRORS: Record<Code, CustomError> = {
     code: 'C00002',
     message: 'NotFound',
     statusCode: 401,
+  },
+  EmailNotRegisterd: {
+    code: 'C00003',
+    message: 'Email is not registered',
+    statusCode: 404,
+  },
+  InvalidNewPassword: {
+    code: 'B00006',
+    message: 'Invalid input newPassword',
+    statusCode: 400,
+  },
+  InvalidOldPassword: {
+    code: 'B00007',
+    message: 'Invalid input oldPassword',
+    statusCode: 400,
   },
 };
