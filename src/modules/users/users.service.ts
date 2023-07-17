@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { SignupDto } from './dto/signup.dto';
 import { UserRepository } from '../../repositories';
-import { CustomErrorException } from 'src/shared/exceptions/custom-error.exception';
-import { ERRORS } from 'src/shared/constants';
+import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
+import { ERRORS } from '../../shared/constants';
 import { MailService } from '../mail/mail.service';
 import * as crypto from 'crypto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
