@@ -76,7 +76,7 @@ export const ERRORS: Record<Code, CustomError> = {
   NotFound: {
     code: 'C00002',
     message: 'NotFound',
-    statusCode: 401,
+    statusCode: 404,
   },
   EmailNotRegisterd: {
     code: 'C00003',
