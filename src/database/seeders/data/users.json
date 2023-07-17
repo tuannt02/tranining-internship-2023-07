@@ -1,0 +1,18 @@
+[
+  {
+    "email": "20522122@gm.uit.edu.vn",
+    "password": "$2b$10$LA3S1FYXxRiBwHrrpZNdHumOEp0PVsPY43MdW9hpnXRVPLyaoagb.",
+    "isMailActive": true,
+    "verifyToken": "",
+    "createdAt": 1689343792,
+    "updatedAt": 1689343792
+  },
+  {
+    "email": "bladehotboy@gmail.com",
+    "password": "$2b$10$LA3S1FYXxRiBwHrrpZNdHumOEp0PVsPY43MdW9hpnXRVPLyaoagb.",
+    "isMailActive": false,
+    "verifyToken": "9425ca4697ec97dcc5d02b0bd1fcdce42f87f932ceb1a866c8643a79b52c1410",
+    "createdAt": 1689343792,
+    "updatedAt": 1689343792
+  }
+]
