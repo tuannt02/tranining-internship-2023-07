@@ -9,6 +9,7 @@ import { SignupDto } from './dto/signup.dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
 
 describe('UserService', () => {
   let service: UsersService;
@@ -177,6 +178,89 @@ describe('UserService', () => {
       const res = await service.forgotPassword(params);
       expect(res).toEqual({
         message: 'An Email reset password sent to your account please confirm',
+      });
+    });
+  });
+
+  describe('Reset password', () => {
+    it('Email not exist', async () => {
+      const params: ResetPasswordDto = {
+        email: '20522122@gm.uit.edu.vn',
+        token:
+          '06d7588460b728a5a6a062b614f716d3ff5795b8ee522a115b7438fc84d4651b',
+        newPassword: 'Tuannt03@',
+      };
+
+      jest
+        .spyOn(service['userRepo'], 'getUserByEmail')
+        .mockResolvedValue(undefined);
+
+      try {
+        await service.resetPassword(params);
+      } catch (err) {
+        expect(err.code).toEqual(ERRORS.InvalidLink.code);
+        expect(err.statusCode).toEqual(ERRORS.InvalidLink.statusCode);
+        expect(err.message).toEqual(ERRORS.InvalidLink.message);
+      }
+    });
+
+    it('Forget token not match', async () => {
+      const params: ResetPasswordDto = {
+        email: '20522122@gm.uit.edu.vn',
+        token:
+          '06d7588460b728a5a6a062b614f716d3ff5795b8ee522a115b7438fc84d4651b',
+        newPassword: 'Tuannt03@',
+      };
+
+      jest.spyOn(service['userRepo'], 'getUserByEmail').mockResolvedValue({
+        email: '20522122@gm.uit.edu.vn',
+        isMailActive: false, // Accepted all true or false
+        password:
+          '$2b$10$LA3S1FYXxRiBwHrrpZNdHumOEp0PVsPY43MdW9hpnXRVPLyaoagb.',
+        verifyToken:
+          '07d7588460b728a5a6a062b614f716d3ff5795b8ee522a115b7438fc84d4651b', // Can be empty string
+        createdAt: 1689343792,
+        updatedAt: 1689343792,
+      });
+
+      try {
+        await service.resetPassword(params);
+      } catch (err) {
+        expect(err.code).toEqual(ERRORS.InvalidLink.code);
+        expect(err.statusCode).toEqual(ERRORS.InvalidLink.statusCode);
+        expect(err.message).toEqual(ERRORS.InvalidLink.message);
+      }
+    });
+
+    it('Reset password successfully', async () => {
+      const params: ResetPasswordDto = {
+        email: '20522122@gm.uit.edu.vn',
+        token:
+          '06d7588460b728a5a6a062b614f716d3ff5795b8ee522a115b7438fc84d4651b',
+        newPassword: 'Tuannt03@',
+      };
+
+      jest.spyOn(service['userRepo'], 'getUserByEmail').mockResolvedValue({
+        email: '20522122@gm.uit.edu.vn',
+        isMailActive: false, // Accepted all true or false
+        password:
+          '$2b$10$LA3S1FYXxRiBwHrrpZNdHumOEp0PVsPY43MdW9hpnXRVPLyaoagb.',
+        verifyToken: '', // Can be empty string
+        forgotPwToken:
+          '06d7588460b728a5a6a062b614f716d3ff5795b8ee522a115b7438fc84d4651b', // Can be empty string
+        createdAt: 1689343792,
+        updatedAt: 1689343792,
+      });
+
+      jest
+        .spyOn(service['userRepo'], 'saveForgetPasswordToken')
+        .mockResolvedValue();
+
+      jest.spyOn(service['userRepo'], 'updatePassword').mockResolvedValue();
+
+      const res = await service.resetPassword(params);
+      expect(res).toEqual({
+        message: 'Password reset successfully',
       });
     });
   });
