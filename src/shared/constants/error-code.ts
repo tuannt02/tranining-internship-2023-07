@@ -13,7 +13,7 @@ type Code =
   | 'AccountUnactive'
   | 'Unauthorized'
   | 'NotFound'
-  | 'EmailNotRegisterd'
+  | 'EmailNotRegistered'
   | 'InvalidNewPassword'
   | 'InvalidOldPassword';
 
@@ -78,7 +78,7 @@ export const ERRORS: Record<Code, CustomError> = {
     message: 'NotFound',
     statusCode: 404,
   },
-  EmailNotRegisterd: {
+  EmailNotRegistered: {
     code: 'C00003',
     message: 'Email is not registered',
     statusCode: 404,

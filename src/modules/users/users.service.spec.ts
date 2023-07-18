@@ -8,6 +8,7 @@ import { MailService } from '../mail/mail.service';
 import { SignupDto } from './dto/signup.dto';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 
 describe('UserService', () => {
   let service: UsersService;
@@ -134,6 +135,48 @@ describe('UserService', () => {
       const res = await service.verifyToken(params.email, params.token);
       expect(res).toEqual({
         message: 'Email verified successfully',
+      });
+    });
+  });
+
+  describe('Forgot password', () => {
+    it('Email not registered', async () => {
+      const params: ForgotPasswordDto = {
+        email: '20522122@gm.uit.edu.vn',
+      };
+
+      jest
+        .spyOn(service['userRepo'], 'getUserByEmail')
+        .mockResolvedValue(undefined);
+
+      try {
+        await service.forgotPassword(params);
+      } catch (err) {
+        expect(err.code).toEqual(ERRORS.EmailNotRegistered.code);
+        expect(err.statusCode).toEqual(ERRORS.EmailNotRegistered.statusCode);
+        expect(err.message).toEqual(ERRORS.EmailNotRegistered.message);
+      }
+    });
+
+    it('Forgot password is sent successfully', async () => {
+      const params: ForgotPasswordDto = {
+        email: '20522122@gm.uit.edu.vn',
+      };
+
+      jest.spyOn(service['userRepo'], 'getUserByEmail').mockResolvedValue({
+        email: '20522122@gm.uit.edu.vn',
+        isMailActive: false, // Accepted all true or false
+        password:
+          '$2b$10$LA3S1FYXxRiBwHrrpZNdHumOEp0PVsPY43MdW9hpnXRVPLyaoagb.',
+        verifyToken:
+          '06d7588460b728a5a6a062b614f716d3ff5795b8ee522a115b7438fc84d4651b', // Can be empty string
+        createdAt: 1689343792,
+        updatedAt: 1689343792,
+      });
+
+      const res = await service.forgotPassword(params);
+      expect(res).toEqual({
+        message: 'An Email reset password sent to your account please confirm',
       });
     });
   });

@@ -55,7 +55,7 @@ export class UsersService {
   async forgotPassword(params: ForgotPasswordDto) {
     const user = await this.userRepo.getUserByEmail(params.email);
     if (!user) {
-      throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+      throw new CustomErrorException(ERRORS.EmailNotRegistered);
     }
 
     const token = crypto.randomBytes(32).toString('hex');
@@ -63,7 +63,7 @@ export class UsersService {
     this.mailService.sendEmailForgotPassword(params.email, token);
 
     return {
-      messsage: 'An Email reset password sent to your account please confirm',
+      message: 'An Email reset password sent to your account please confirm',
     };
   }
 
@@ -94,7 +94,7 @@ export class UsersService {
   async changePassword(changePwDto: ChangePasswordDto) {
     const user = await this.userRepo.getUserByEmail(changePwDto.email);
     if (!user) {
-      throw new CustomErrorException(ERRORS.EmailNotRegisterd);
+      throw new CustomErrorException(ERRORS.EmailNotRegistered);
     }
 
     // Check if valid password
