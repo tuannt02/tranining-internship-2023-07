@@ -1,9 +1,10 @@
-import * as maintenanceModeMessage from 'aws-sdk/lib/maintenance_mode_message';
-maintenanceModeMessage.suppress = true;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('aws-sdk/lib/maintenance_mode_message').suppress = true;
 import * as AWS from 'aws-sdk';
 import { CustomErrorException } from '../../shared/exceptions/custom-error.exception';
 import { ERRORS } from '../../shared/constants';
 import { Logger } from '@nestjs/common';
+import 'dotenv/config';
 
 export interface DynamoDBItem {
   [key: string]: any;
@@ -27,7 +28,7 @@ export abstract class AWSDynamo<T extends DynamoDBItem> {
     };
 
     // Check and set configuration for DynamoDB local
-    if (process.env.STAGE) {
+    if (process.env.STAGE === 'local') {
       options.region = 'local';
       options.endpoint = 'http://localhost:8000';
     }

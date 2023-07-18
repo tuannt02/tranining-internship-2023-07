@@ -1,9 +1,3 @@
-/**
- * custom-error.exception.ts
- * BackEnd
- * Created by khuongdv <khuongdv@vitalify.asia> on 5/10/23
- * Copyright (c) 2023 VFA Asia Co.,Ltd. All rights reserved.
- */
 import { CustomError } from '../types';
 import { InternalServerErrorException } from '@nestjs/common';
 

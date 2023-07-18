@@ -1,4 +1,4 @@
-import { dateToTimestamp } from 'src/shared/utils/date.utils';
+import { dateToTimestamp } from '../shared/utils/date.utils';
 import { UserModel, User } from '../models/user.model';
 import * as bcrypt from 'bcrypt';
 
