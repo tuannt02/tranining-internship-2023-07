@@ -40,4 +40,22 @@ describe('UserController', () => {
     await controller.signup(params);
     expect(spySignup).toHaveBeenCalledWith(params);
   });
+
+  it('Should verify token success()', async () => {
+    const params: { email: string; token: string } = {
+      email: '20522122@gm.uit.edu.vn',
+      token: '06d7588460b728a5a6a062b614f716d3ff5795b8ee522a115b7438fc84d4651b',
+    };
+
+    const spyVerifyToken = jest
+      .spyOn(service, 'verifyToken')
+      .mockResolvedValue({
+        message: 'Email verified successfully',
+      });
+
+    await controller.verifyToken(params.email, params.token);
+    expect(spyVerifyToken).toHaveBeenCalledWith(
+      ...Object.keys(params).map((index) => params[index]),
+    );
+  });
 });
