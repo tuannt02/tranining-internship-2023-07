@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { SignupDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 describe('UserController', () => {
   let controller: UsersController;
@@ -91,5 +92,22 @@ describe('UserController', () => {
 
     await controller.resetPassword(params);
     expect(spyResetPassword).toHaveBeenCalledWith(params);
+  });
+
+  it('Should change password success()', async () => {
+    const params: ChangePasswordDto = {
+      email: '20522122@gm.uit.edu.vn',
+      oldPassword: 'Tuannt02@',
+      newPassword: 'Tuannt03@',
+    };
+
+    const spyChangePassword = jest
+      .spyOn(service, 'changePassword')
+      .mockResolvedValue({
+        message: 'Password change successfully',
+      });
+
+    await controller.changePassword(params);
+    expect(spyChangePassword).toHaveBeenCalledWith(params);
   });
 });

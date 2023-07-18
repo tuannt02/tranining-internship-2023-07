@@ -10,6 +10,7 @@ import { CustomErrorException } from '../../shared/exceptions/custom-error.excep
 import { ERRORS } from '../../shared/constants';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 describe('UserService', () => {
   let service: UsersService;
@@ -261,6 +262,110 @@ describe('UserService', () => {
       const res = await service.resetPassword(params);
       expect(res).toEqual({
         message: 'Password reset successfully',
+      });
+    });
+  });
+
+  describe('Change password', () => {
+    it('Email not registered', async () => {
+      const params: ChangePasswordDto = {
+        email: '20522122@gm.uit.edu.vn',
+        oldPassword: 'Tuannt02@',
+        newPassword: 'Tuannt03@',
+      };
+
+      jest
+        .spyOn(service['userRepo'], 'getUserByEmail')
+        .mockResolvedValue(undefined);
+
+      try {
+        await service.forgotPassword(params);
+      } catch (err) {
+        expect(err.code).toEqual(ERRORS.EmailNotRegistered.code);
+        expect(err.statusCode).toEqual(ERRORS.EmailNotRegistered.statusCode);
+        expect(err.message).toEqual(ERRORS.EmailNotRegistered.message);
+      }
+    });
+
+    it('Wrong old password', async () => {
+      const params: ChangePasswordDto = {
+        email: '20522122@gm.uit.edu.vn',
+        oldPassword: 'Tuannt04@',
+        newPassword: 'Tuannt03@',
+      };
+
+      jest.spyOn(service['userRepo'], 'getUserByEmail').mockResolvedValue({
+        email: '20522122@gm.uit.edu.vn',
+        isMailActive: false, // Accepted all true or false
+        password:
+          '$2b$10$LA3S1FYXxRiBwHrrpZNdHumOEp0PVsPY43MdW9hpnXRVPLyaoagb.',
+        verifyToken: '', // Can be empty string
+        createdAt: 1689343792,
+        updatedAt: 1689343792,
+      });
+
+      try {
+        await service.changePassword(params);
+      } catch (err) {
+        expect(err.code).toEqual(ERRORS.Unauthorized.code);
+        expect(err.statusCode).toEqual(ERRORS.Unauthorized.statusCode);
+        expect(err.message).toEqual(ERRORS.Unauthorized.message);
+      }
+    });
+
+    it('Account unactive', async () => {
+      const params: ChangePasswordDto = {
+        email: '20522122@gm.uit.edu.vn',
+        oldPassword: 'Tuannt02@',
+        newPassword: 'Tuannt03@',
+      };
+
+      jest.spyOn(service['userRepo'], 'getUserByEmail').mockResolvedValue({
+        email: '20522122@gm.uit.edu.vn',
+        isMailActive: false, // Accepted all true or false
+        password:
+          '$2b$10$LA3S1FYXxRiBwHrrpZNdHumOEp0PVsPY43MdW9hpnXRVPLyaoagb.',
+        verifyToken: '', // Can be empty string
+        createdAt: 1689343792,
+        updatedAt: 1689343792,
+      });
+
+      jest.spyOn(service['userRepo'], 'saveVerifyToken').mockResolvedValue();
+      jest
+        .spyOn(service['mailService'], 'sendUserConfirmation')
+        .mockResolvedValue();
+
+      try {
+        await service.changePassword(params);
+      } catch (err) {
+        expect(err.code).toEqual(ERRORS.AccountUnactive.code);
+        expect(err.statusCode).toEqual(ERRORS.AccountUnactive.statusCode);
+        expect(err.message).toEqual(ERRORS.AccountUnactive.message);
+      }
+    });
+
+    it('Change password successfully', async () => {
+      const params: ChangePasswordDto = {
+        email: '20522122@gm.uit.edu.vn',
+        oldPassword: 'Tuannt02@',
+        newPassword: 'Tuannt03@',
+      };
+
+      jest.spyOn(service['userRepo'], 'getUserByEmail').mockResolvedValue({
+        email: '20522122@gm.uit.edu.vn',
+        isMailActive: true, // Accepted all true or false
+        password:
+          '$2b$10$LA3S1FYXxRiBwHrrpZNdHumOEp0PVsPY43MdW9hpnXRVPLyaoagb.',
+        verifyToken: '', // Can be empty string
+        createdAt: 1689343792,
+        updatedAt: 1689343792,
+      });
+
+      jest.spyOn(service['userRepo'], 'updatePassword').mockResolvedValue();
+
+      const res = await service.changePassword(params);
+      expect(res).toEqual({
+        message: 'Password change successfully',
       });
     });
   });
