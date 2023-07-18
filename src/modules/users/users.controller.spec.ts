@@ -6,6 +6,7 @@ import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { SignupDto } from './dto/signup.dto';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 
 describe('UserController', () => {
   let controller: UsersController;
@@ -57,5 +58,20 @@ describe('UserController', () => {
     expect(spyVerifyToken).toHaveBeenCalledWith(
       ...Object.keys(params).map((index) => params[index]),
     );
+  });
+
+  it('Should forgot password success()', async () => {
+    const params: ForgotPasswordDto = {
+      email: '20522122@gm.uit.edu.vn',
+    };
+
+    const spyForgotPassword = jest
+      .spyOn(service, 'forgotPassword')
+      .mockResolvedValue({
+        message: 'An Email reset password sent to your account please confirm',
+      });
+
+    await controller.forgotPassword(params);
+    expect(spyForgotPassword).toHaveBeenCalledWith(params);
   });
 });
