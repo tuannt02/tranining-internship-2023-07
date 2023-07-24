@@ -18,6 +18,12 @@ import { ChangePasswordDto } from './dto/changePassword.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async healthCheck() {
+    return this.usersService.healthCheck();
+  }
+
   @Post('/api/users/create')
   @HttpCode(HttpStatus.CREATED)
   signup(@Body() body: SignupDto) {
