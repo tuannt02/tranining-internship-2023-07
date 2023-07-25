@@ -129,7 +129,7 @@ export class UsersService {
 
   public healthCheck() {
     return {
-      server: 'ok',
+      server: 'Active',
     };
   }
 }
