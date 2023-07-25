@@ -24,7 +24,7 @@ WORKDIR /app
 
 # Copy the production build files from the builder image to the container
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env ./.env
+# COPY --from=builder /app/.env ./.env
 COPY --from=builder /app/node_modules ./node_modules
 
 COPY package*.json ./
