@@ -1,5 +1,5 @@
 # Use the official Node.js 18 image as the base image
-FROM node:18 AS builder
+FROM public.ecr.aws/docker/library/node:18 AS builder
 
 # Set the working directory in the container to /app
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Use a lightweight Node.js 18 image as the base image
-FROM node:18-alpine
+FROM public.ecr.aws/docker/library/node:18-alpine
 
 # Set the working directory in the container to /app
 WORKDIR /app
