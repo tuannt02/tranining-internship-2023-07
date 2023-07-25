@@ -126,4 +126,10 @@ export class UsersService {
       message: 'Password change successfully',
     };
   }
+
+  public healthCheck() {
+    return {
+      server: 'ok',
+    };
+  }
 }
